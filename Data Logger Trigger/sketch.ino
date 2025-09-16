@@ -118,6 +118,9 @@ int ajusteTEMP = 0;
 int ajusteUMI = 0;
 int limiteSelecionado = -1;  // Armazena qual variável está sendo ajustada
 
+// Variável global para controlar a posição do scroll
+int scrollPos = 0;
+
 // ---- Pisca SOS (laranja) não-bloqueante ----
 unsigned long sosBlinkLast = 0;
 bool sosBlinkState = LOW;
@@ -319,22 +322,36 @@ void dataHora() {
   long epoch = now.unixtime() + (config.UTC_OFFSET * 3600);
   DateTime adjustedTime(epoch);
 
-  lcd.setCursor(0, 0);
-  lcd.print("DATA: ");
-  if (adjustedTime.day() < 10) lcd.print("0");
-  lcd.print(adjustedTime.day()); lcd.print("/");
-  if (adjustedTime.month() < 10) lcd.print("0");
-  lcd.print(adjustedTime.month()); lcd.print("/");
-  lcd.print(adjustedTime.year());
+  // Monta string com data e hora
+  char buffer[20];
+  sprintf(buffer, "%02d/%02d/%04d %02d:%02d:%02d",
+          adjustedTime.day(),
+          adjustedTime.month(),
+          adjustedTime.year(),
+          adjustedTime.hour(),
+          adjustedTime.minute(),
+          adjustedTime.second());
 
-  lcd.setCursor(0, 1);
-  lcd.print("HORA: ");
-  if (adjustedTime.hour() < 10) lcd.print("0");
-  lcd.print(adjustedTime.hour()); lcd.print(":");
-  if (adjustedTime.minute() < 10) lcd.print("0");
-  lcd.print(adjustedTime.minute()); lcd.print(":");
-  if (adjustedTime.second() < 10) lcd.print("0");
-  lcd.print(adjustedTime.second());
+  String texto = String(buffer);
+
+  // Tamanho máximo visível (8 colunas: do 8 até o 15)
+  int larguraJanela = 8;
+
+  // Se chegou ao fim, reinicia o scroll
+  if (scrollPos > texto.length()) {
+    scrollPos = 0;
+  }
+
+  // Extrai pedaço do texto para exibir
+  String visivel = texto.substring(scrollPos, scrollPos + larguraJanela);
+
+  // Mostra no LCD, sempre a partir da coluna 8
+  lcd.setCursor(8, 1);
+  lcd.print(visivel);
+
+  // Avança o scroll para a próxima chamada
+  scrollPos++;
+  scrollPos++;
 }
 
 // ==================================================
@@ -704,6 +721,7 @@ void atualizarIndicadores() {
   lcd.print(" U:"); lcd.print(umidade, 0); lcd.print("%");
   lcd.setCursor(0,1);
   lcd.print("L:"); lcd.print(luminosidade, 0); lcd.print("%");
+  dataHora();
 }
 
 void SoS(){
