@@ -6,8 +6,7 @@
 
 // ---------------- CONFIGURAÇÕES ----------------
 #define DHTPIN 2
-#define DHTTYPE DHT22
-
+#define DHTTYPE DHT11
 // ---------------- OBJETOS ----------------
 DHT dht(DHTPIN, DHTTYPE);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -116,6 +115,7 @@ int ajusteUTC = 0; // Variável para verificar se estamos no ajuste do UTC (0 = 
 int ajusteLimite = 0;
 int ajusteTEMP = 0;
 int ajusteUMI = 0;
+int desligarDispositivo = 0;
 int limiteSelecionado = -1;  // Armazena qual variável está sendo ajustada
 
 // Variável global para controlar a posição do scroll
@@ -136,7 +136,12 @@ void setup() {
   Serial.begin(9600);
   dht.begin();
   RTC.begin();
-  RTC.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
+  if (!RTC.isrunning()) {
+    Serial.println("RTC parado, ajustando com a hora de compilacao (LOCAL)...");
+    RTC.adjust(DateTime(F(__DATE__), F(__TIME__))); // grava HORA LOCAL
+  }
+  
   EEPROM.begin();
 
   carregarConfig();
@@ -164,14 +169,13 @@ void loop() {
   // --- Navegação de botões ---
   navegacaoBotoes();
 
-  //dataHora();
-
   float temperatura = dht.readTemperature();
   float umidade     = dht.readHumidity();
 
   // --- lê luminosidade em % ---
   int valorLDR = analogRead(ldrPin);
-  float luminosidade = map(valorLDR, 0, 1023, 100, 0);
+  float luminosidade = map(valorLDR, 20, 250, 100, 0);
+  luminosidade = constrain(luminosidade, 0, 100);
 
   // --- obtém tempo ajustado ---
   DateTime now = RTC.now();
@@ -234,6 +238,11 @@ void loop() {
   if (ajusteLimite == 1) {
     ajustarLimite();
     return;  // Evita que o resto do loop rode
+  }
+
+  if (desligarDispositivo == 1){
+    desligar();
+    return;
   }
 }
 
@@ -429,7 +438,7 @@ void selecionarOpcao() {
         case 1: estadoAtual = PREFERENCIAS; selecao = 0; mostrarMenu(menuPreferencias, tamMenuPreferencias); break;
         case 2: estadoAtual = UNIDADES; selecao = 0; mostrarMenu(menuUnidades, tamMenuUnidades); break;
         case 3: estadoAtual = LIMITES; selecao = 0; mostrarMenu(menuLimites, tamMenuLimites); break;
-        case 4: desligar(); break;
+        case 4: iniciarDesligarSistema(); break;
       }
       break;
 
@@ -690,10 +699,19 @@ void desligar() {
   lcd.clear(); 
   lcd.print("Desligando...");
   Serial.print("Desligando...");
+
+  digitalWrite(LED_VERDE, LOW);
+  digitalWrite(LED_VERMELHO, LOW);
+  digitalWrite(LED_LARANJA, LOW);
+
   delay(3000); 
   lcd.clear();
   lcd.noBacklight();
   delay(3000); 
+}
+
+void iniciarDesligarSistema(){
+  desligarDispositivo = 1;
 }
 
 void atualizarIndicadores() {
@@ -705,7 +723,8 @@ void atualizarIndicadores() {
   float tempC = dht.readTemperature();
   float umidade = dht.readHumidity();
   int valorLDR = analogRead(ldrPin);
-  float luminosidade = map(valorLDR, 0, 1023, 100, 0);
+  float luminosidade = map(valorLDR, 20, 250, 100, 0);
+  luminosidade = constrain(luminosidade, 0, 100);
 
   // --- Temperatura para exibição ---
   float temperatura = tempC;
@@ -761,7 +780,7 @@ void somRegistroSerial(){
 // Lógica de navegação de menus - A navegação deve ser bloqueada enquanto ajusta o UTC
 void navegacaoBotoes() {
   // Só permite navegação se não estiver no ajuste de UTC
-  if ((ajusteUTC == 0) && (ajusteLimite == 0)) {
+  if ((ajusteUTC == 0) && (ajusteLimite == 0) && (desligarDispositivo == 0)) {
     if (digitalRead(BTN_UP) == LOW) {
       Serial.println("BOTÃO UP pressionado");  // debug
       beepTecla();
