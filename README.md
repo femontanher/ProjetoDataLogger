@@ -51,3 +51,7 @@ LIMITES
 <img width="748" height="460" alt="image" src="https://github.com/user-attachments/assets/19944f80-b0ae-43df-9562-852b93f53fa5" />
 
 DESLIGAR
+
+<img width="750" height="479" alt="image" src="https://github.com/user-attachments/assets/4f1fa479-14e5-4c01-81e7-e26d7af175ec" />
+<img width="725" height="479" alt="image" src="https://github.com/user-attachments/assets/64a28ce0-8aa7-4d65-9211-f6de606f9e9b" />
+
