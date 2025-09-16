@@ -17,7 +17,7 @@ Além disso, conta com o seguinte menu personalizado:
 
 NDICADORES
 - [x]  Ir para a tela que registra as informações de temperatura, umidade e luminosidade
-<img width="767" height="485" alt="image" src="https://github.com/user-attachments/assets/0f409ecd-c7a3-4b85-bdc7-b48a6b9b9026" />
+<img width="755" height="473" alt="image" src="https://github.com/user-attachments/assets/e693cd68-d416-4786-ae9d-62803a4e4346" />
 
 PREFERÊNCIAS
 - [x]  Ligar/Desligar a luz de fundo do display
