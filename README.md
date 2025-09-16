@@ -1,5 +1,6 @@
 # ProjetoDataLogger
 Atividade N1 para a criação de um DataLogger.
+Link wokwi: https://wokwi.com/projects/441016664910978049 
 
 O nosso projeto possuí as seguintes funcionalidades:
 
