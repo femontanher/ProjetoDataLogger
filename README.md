@@ -33,9 +33,14 @@ Hardaware:
 
 Indicadores de Led:
 LED Verde - Todo registro realizado na eeprom dos valores lidos pelos sensores, o led verde irá piscar.
+
 LED vermelho: pisca fixo ligado quando um valor atinge/excede o máximo permitido.
+
 LED laranja: pisca quando há valores abaixo do mínimo ou acima do máximo, mas ainda não chegaram no ponto crítico (≥ máximo).
+
 Nenhum LED aceso: todos os valores dentro da faixa configurada.
+
+
 
 Além disso, conta com o seguinte menu personalizado:
 
@@ -63,6 +68,7 @@ UNIDADES
 
 - [x]  Alterar o horário UTC
 <img width="722" height="478" alt="image" src="https://github.com/user-attachments/assets/1d5372bb-204f-4d6e-84ad-f694655c455a" />
+
 Observação: Está definido que o UTC pode ir de 14 até -12, o programa não deixa ultrapassar isso.
 
 LIMITES
@@ -77,6 +83,7 @@ Para todas as opções abaixo, não tem nenhum limite, o usuário consegue deter
 <img width="748" height="460" alt="image" src="https://github.com/user-attachments/assets/19944f80-b0ae-43df-9562-852b93f53fa5" />
 
 DESLIGAR
+
 <img width="750" height="479" alt="image" src="https://github.com/user-attachments/assets/4f1fa479-14e5-4c01-81e7-e26d7af175ec" />
 <img width="725" height="479" alt="image" src="https://github.com/user-attachments/assets/64a28ce0-8aa7-4d65-9211-f6de606f9e9b" />
 
