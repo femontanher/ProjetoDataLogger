@@ -146,7 +146,7 @@ void setup() {
 
   carregarConfig();
 
-  if(config.animacaoAtivado){
+  if(config.animacaoAtivado == true){
     animacao(); 
   }
 
@@ -347,7 +347,7 @@ void dataHora() {
   int larguraJanela = 8;
 
   // Se chegou ao fim, reinicia o scroll
-  if (scrollPos > texto.length()) {
+  if (scrollPos > texto.length() - larguraJanela) {
     scrollPos = 0;
   }
 
@@ -359,7 +359,6 @@ void dataHora() {
   lcd.print(visivel);
 
   // Avança o scroll para a próxima chamada
-  scrollPos++;
   scrollPos++;
 }
 
@@ -387,7 +386,7 @@ void carregarConfig() {
     config.temp_min = 15.0;
     config.unidadePadrao = 'C';
     config.UTC_OFFSET = -3;
-    config.animacaoAtivado = false;
+    config.animacaoAtivado = true;
     config.som = true;
     config.log_serial = true;
 
@@ -487,20 +486,21 @@ void Backlight() {
 }
 
 void Animacao() { 
-  config.animacaoAtivado = !config.animacaoAtivado; // inverte estado
   lcd.clear();
-  if(config.animacaoAtivado){
+  if(config.animacaoAtivado == true){
     lcd.print("Intro Desativada!");
     for (int i = 0; i < 8 + strlen("Intro Desativada!"); i++) {
       delay(200);
       lcd.scrollDisplayLeft();
     }
+    config.animacaoAtivado = false;
   }else{
     lcd.print("Intro Ativada!");
     for (int i = 0; i < 8 + strlen("Intro Ativada!"); i++) {
       delay(200);
       lcd.scrollDisplayLeft();
     }
+    config.animacaoAtivado = true;
   }
 
   salvarConfig();
